@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}PlayLove Spark - Education{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Relationship Education</h1>
+        <p class="lead">Learn and grow with expert relationship insights and resources</p>
+    </div>
+</div>
+
+{% if not user_profile.initialized %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            Please set up your profile on the home page before accessing educational content.
+            <a href="{% url 'home' %}" class="btn btn-primary ms-3">Go to Profile Setup</a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <ul class="nav nav-pills mb-4" id="education-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" id="all-tab" data-bs-toggle="pill" href="#all">All Articles</a>
+            </li>
+            {% for category in categories %}
+                <li class="nav-item">
+                    <a class="nav-link" id="{{ category|slugify }}-tab" data-bs-toggle="pill" href="#{{ category|slugify }}">{{ category }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="all">
+                <div class="row">
+                    {% for article in articles %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <span class="badge bg-secondary mb-2">{{ article.category }}</span>
+                                    <h5 class="card-title">{{ article.title }}</h5>
+                                    <p class="card-text">{{ article.summary }}</p>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <a href="{% url 'article_detail' article.id %}" class="btn btn-primary btn-sm">Read More</a>
+                                    {% if article.id in viewed_articles %}
+                                        <small class="text-success float-end"><i class="fas fa-check"></i> Read</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            {% for category in categories %}
+                <div class="tab-pane fade" id="{{ category|slugify }}">
+                    <div class="row">
+                        {% for article in articles_by_category|get_item:category %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <span class="badge bg-secondary mb-2">{{ article.category }}</span>
+                                        <h5 class="card-title">{{ article.title }}</h5>
+                                        <p class="card-text">{{ article.summary }}</p>
+                                    </div>
+                                    <div class="card-footer bg-white">
+                                        <a href="{% url 'article_detail' article.id %}" class="btn btn-primary btn-sm">Read More</a>
+                                        {% if article.id in viewed_articles %}
+                                            <small class="text-success float-end"><i class="fas fa-check"></i> Read</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-md-12">
+                                <p>No articles available in this category.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

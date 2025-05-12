@@ -1,0 +1,18 @@
+[server]
+headless = true
+address = "0.0.0.0"
+port = 5000
+
+[theme]
+primaryColor = "#F4436C"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F5F5"
+textColor = "#545C52"
+font = "sans serif"
+
+# Custom CSS to apply additional colors from the palette
+# Deep Purple: #533278
+# Pink/Magenta: #F4436C (primary)
+# Gray: #B4B4B4
+# Teal: #0C7489
+# Dark Gray/Green: #545C52 (text)

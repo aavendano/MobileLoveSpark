@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}PlayLove Spark - Home{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12 text-center">
+        <h1>Welcome to PlayLove Spark</h1>
+        <p class="lead">Ignite your relationship with fun and meaningful challenges</p>
+    </div>
+</div>
+
+{% if not user_profile.initialized %}
+<!-- Welcome Screen for New Users -->
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Get Started</h4>
+            </div>
+            <div class="card-body">
+                <p>Set up your profile to begin your relationship journey with PlayLove Spark.</p>
+                <form method="post" action="{% url 'home' %}">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.partner1_name.id_for_label }}" class="form-label">Your Name</label>
+                            {{ form.partner1_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.partner2_name.id_for_label }}" class="form-label">Partner's Name</label>
+                            {{ form.partner2_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.relationship_status.id_for_label }}" class="form-label">Relationship Status</label>
+                            {{ form.relationship_status }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.relationship_duration.id_for_label }}" class="form-label">Relationship Duration</label>
+                            {{ form.relationship_duration }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.challenge_frequency.id_for_label }}" class="form-label">How often would you like to receive challenges?</label>
+                        {{ form.challenge_frequency }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Preferred Challenge Categories</label>
+                        <div class="form-text mb-2">Select the types of challenges you're interested in</div>
+                        <div class="row">
+                            {% for choice in form.preferred_categories %}
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        {{ choice }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Excluded Challenge Categories</label>
+                        <div class="form-text mb-2">Select any categories you'd prefer to avoid</div>
+                        <div class="row">
+                            {% for choice in form.excluded_categories %}
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        {{ choice }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Create Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Dashboard for Existing Users -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>Today's Challenge</h4>
+                <span class="badge bg-secondary">{{ current_challenge.category }}</span>
+            </div>
+            <div class="card-body challenge-card">
+                {% if current_challenge %}
+                    <h4 class="text-primary mb-3">{{ current_challenge.title }}</h4>
+                    
+                    <div class="alert alert-light mb-4">
+                        {{ current_challenge.description }}
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">Difficulty:</span>
+                                <span class="{{ current_challenge.difficulty_class }}">{{ current_challenge.difficulty_display }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <small class="text-muted">Generated: {{ current_challenge.generated_at|date:"F d, g:i a" }}</small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div>
+                            <form method="post" action="{% url 'generate_challenge' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-primary">Generate New Challenge</button>
+                            </form>
+                        </div>
+                        <div>
+                            <form method="post" action="{% url 'complete_challenge' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="challenge_id" value="{{ current_challenge.id }}">
+                                <input type="hidden" name="category" value="{{ current_challenge.category }}">
+                                <button type="submit" class="btn btn-success">Mark as Completed</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No challenge available. Generate a new one!</p>
+                    <form method="post" action="{% url 'generate_challenge' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Generate Challenge</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>Recent Activity</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    {% if completed_challenges %}
+                        {% for challenge in completed_challenges %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ challenge.challenge_id }}</strong>
+                                    <span class="badge bg-secondary">{{ challenge.category }}</span>
+                                </div>
+                                <small>{{ challenge.completed_at|date:"M d, Y" }}</small>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item">No completed challenges yet.</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Spark Level</h4>
+            </div>
+            <div class="card-body">
+                <div class="spark-meter">
+                    <div class="fill" style="width: {{ user_progress.spark_level }}%;"></div>
+                </div>
+                <p class="text-center">{{ user_progress.spark_level }}% Spark</p>
+                
+                <div class="text-center mb-3">
+                    <span class="badge">{{ user_progress.streak }} Day Streak</span>
+                    <span class="badge">{{ user_progress.total_completed }} Completed</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>Your Badges</h4>
+            </div>
+            <div class="card-body">
+                {% if user_progress.badges %}
+                    <div class="row">
+                        {% for badge in user_progress.badges %}
+                            <div class="col-6 text-center mb-3">
+                                <div class="badge-icon">
+                                    <i class="fas fa-award fa-2x text-warning"></i>
+                                </div>
+                                <div>{{ badge }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center">Complete challenges to earn badges!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

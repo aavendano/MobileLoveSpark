@@ -1,0 +1,151 @@
+PROMPT:
+
+Develop a cross-platform mobile application named "PlayLove Spark" using Replit, designed to enhance intimacy and connection for couples. The app should align with the PlayLoveToys brand values and target the Canadian market.
+
+I.  App Purpose and Brand Alignment:
+
+    A.  Core Concept:
+        1.  "PlayLove Spark" aims to provide couples with engaging tools and activities to ignite and maintain intimacy in their relationship.
+        2.  The app's content, design, and functionality must consistently reflect the PlayLoveToys brand tone:
+            a.  Empowering
+            b.  Sex-Positive
+            c.  Inclusive
+            d.  Educational
+            e.  Engaging
+            f.  Respectful
+            g.  Authentic
+            h.  Discreet
+
+    B.  Target Audience:
+        1.  Canadian couples aged 25-55, interested in sexual wellness, open communication, and enhancing their relationships.
+
+II. Core Functionality:
+
+    A.  Challenge Delivery System:
+        1.  Implement a robust system to deliver daily or weekly intimacy challenges.
+        2.  Categorize challenges into relevant themes:
+            a.  Communication Boosters
+            b.  Physical Touch & Affection
+            c.  Creative Date Night Ideas
+            d.  Sexual Exploration
+            e.  Emotional Connection
+        3.  Design a database structure (adaptable for Firebase/Supabase) to store:
+            a.  Challenge text and descriptions
+            b.  Challenge categories
+            c.  Challenge frequency settings
+        4.  Include a scheduling mechanism to deliver challenges at specified intervals.
+
+    B.  User Personalization:
+        1.  Develop user profiles with customizable preferences:
+            a.  Preferred challenge frequency (daily, weekly, etc.)
+            b.  Selected challenge categories
+            c.  Option to exclude specific categories
+        2.  Store user preferences securely.
+
+    C.  Progress Tracking & Gamification:
+        1.  Enable users to mark challenges as "completed."
+        2.  Visualize progress with a "Spark Meter" or similar graphic element that increases with completed challenges.
+        3.  Consider incorporating elements of gamification:
+            a.  Badges or rewards for consistent engagement
+            b.  Streaks for completing challenges in a row
+        4.  Store user progress data.
+
+    D.  PlayLoveToys Integration (Non-Intrusive):
+        1.  Incorporate optional, tasteful challenges featuring PlayLoveToys products:
+            a.  Example: "Use [Product Name] during foreplay tonight."
+        2.  Implement a system for exclusive discounts or offers:
+            a.  Consider unique coupon codes generated within the app.
+        3.  Provide seamless links to relevant articles or blog posts on the PlayLoveToys website:
+            a.  Example: A challenge about communication links to a blog post on "Effective Communication in the Bedroom."
+
+    E.  Educational Content Modules:
+        1.  Integrate short, informative modules on relevant topics:
+            a.  Communication skills
+            b.  Consent and boundaries
+            c.  Exploring sexual fantasies
+            d.  Improving sexual wellness
+        2.  Ensure content aligns with PlayLoveToys's brand tone and is evidence-based where appropriate.
+        3.  Store and display educational content.
+
+III. Technology Stack & Development Approach (Prototype in Replit, Plan for Scalability):
+
+    A.  Primary Technology:
+        1.  Dart language and Flutter framework for cross-platform mobile development within the Replit environment.
+        2.  Leverage Replit's Flutter template and pre-built widgets to expedite the prototyping process.
+
+    B.  Data Management (Prototype):
+        1.  For the Replit prototype, utilize Replit's built-in database capabilities or in-memory data structures (lists, dictionaries) for temporary storage of:
+            a.  Challenges
+            b.  User profiles and preferences
+            c.  Progress data
+        2.  Crucially, document the planned data schema and migration strategy for a scalable Backend-as-a-Service (BaaS) for a production-ready version:
+            a.  Preferred BaaS: Firebase (Google) or Supabase (Open Source)
+            b.  Rationale for BaaS selection (scalability, security, ease of use)
+            c.  Detailed description of how the Replit data will be transferred to the chosen BaaS.
+
+    C.  User Interface (UI) and User Experience (UX) Design:
+        1.  Design clean, intuitive, and visually appealing interfaces within Flutter.
+        2.  Consider using a design tool like Figma (external to Replit) to create detailed mockups and export assets (icons, images).
+        3.  Prioritize a user-friendly experience, especially for couples who may not be highly tech-savvy.
+
+    D.  AI Enhancement Considerations (Future):
+        1.  Outline potential future integration points for AI to personalize the user experience:
+            a.  AI-powered challenge recommendations based on user preferences and feedback.
+            b.  Analysis of user engagement to optimize challenge delivery.
+        2.  Explore the feasibility of using TensorFlow Lite for on-device AI features (this is a forward-looking consideration, not a requirement for the initial Replit prototype).
+            a.  Ethical implications of AI in this context (data privacy, avoiding bias) must be addressed.
+
+IV. Replit Development Workflow:
+
+    A.  Replit Project Setup:
+        1.  Begin with Replit's pre-configured Flutter template.
+        2.  Establish a clear project directory structure and file naming conventions.
+
+    B.  Version Control:
+        1.  Utilize Replit's integrated version control system or connect to an external Git repository (e.g., GitHub) for effective version management.
+
+    C.  Collaborative Development:
+        1.  If working in a team, leverage Replit's real-time collaboration features for simultaneous coding and debugging.
+
+    D.  Replit Deployment (Prototype Only):
+        1.  Use Replit's deployment options to generate a web-accessible prototype of the "PlayLove Spark" app.
+        2.  Provide clear, step-by-step documentation on how to build and run the Flutter application within the Replit environment.
+        3.  Explicitly state the limitations of Replit's deployment for mobile apps and emphasize that further steps and tools will be necessary for final app store deployment (Apple App Store and Google Play Store).
+
+V.  Constraints and Scope:
+
+    A.  Replit Prototype Focus:
+        1.  The primary objective within Replit is to create a functional prototype that demonstrates the core features and user flows of the "PlayLove Spark" app.
+        2.  Prioritize efficient development and rapid iteration within Replit's capabilities.
+
+    B.  Scalability and Production Readiness:
+        1.  While a fully scalable and production-ready app is not the goal of the Replit phase, developers must:
+            a.  Design the app architecture with scalability in mind.
+            b.  Document all scalability considerations.
+            c.  Provide a clear migration path to a robust BaaS (Firebase or Supabase).
+
+    C.  Ethical Considerations:
+        1.  Throughout development, adhere to the highest ethical standards regarding:
+            a.  User data privacy and security
+            b.  Responsible content creation (avoiding explicit or exploitative material)
+            c.  Accurate representation of PlayLoveToys's brand and values
+
+VI. Deliverables:
+
+    A.  Functional Replit Prototype:
+        1.  A working prototype of the "PlayLove Spark" app, accessible via Replit's deployment URL.
+        2.  The prototype should demonstrate:
+            a.  Challenge delivery and management
+            b.  User personalization features
+            c.  Progress tracking
+            d.  Basic PlayLoveToys integration
+            e.  Display of educational content
+
+    B.  Comprehensive Documentation:
+        1.  Detailed documentation covering:
+            a.  App architecture and data schema (including BaaS migration plan)
+            b.  Step-by-step instructions to run the app within Replit
+            c.  Scalability considerations and limitations of the Replit prototype
+            d.  UI/UX design considerations
+            e.  Ethical considerations and compliance with PlayLoveToys's brand
+            f.  Any known bugs or limitations of the prototype

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}PlayLove Spark - Challenges{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Relationship Challenges</h1>
+        <p class="lead">Explore and take on new challenges to strengthen your relationship</p>
+    </div>
+</div>
+
+{% if not user_profile.initialized %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            Please set up your profile on the home page before accessing challenges.
+            <a href="{% url 'home' %}" class="btn btn-primary ms-3">Go to Profile Setup</a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4>Current Challenge</h4>
+                {% if current_challenge %}
+                    <span class="badge bg-secondary">{{ current_challenge.category }}</span>
+                {% endif %}
+            </div>
+            <div class="card-body challenge-card">
+                {% if current_challenge %}
+                    <h5>{{ current_challenge.title }}</h5>
+                    <p>{{ current_challenge.description }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted">Difficulty: {{ current_challenge.difficulty }}</small>
+                        </div>
+                        <div>
+                            <form method="post" action="{% url 'complete_challenge' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="challenge_id" value="{{ current_challenge.id }}">
+                                <input type="hidden" name="category" value="{{ current_challenge.category }}">
+                                <button type="submit" class="btn btn-success">Mark as Completed</button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No challenge available. Generate a new one!</p>
+                    <form method="post" action="{% url 'generate_challenge' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Generate Challenge</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Generate New Challenge</h4>
+            </div>
+            <div class="card-body">
+                <p>Want something specific? Generate a challenge from your preferred category:</p>
+                
+                <!-- Category descriptions -->
+                <div class="row mb-4 small">
+                    <div class="col-md-12">
+                        <div class="accordion" id="categoryAccordion">
+                            {% for category in categories %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading-{{ forloop.counter }}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse-{{ forloop.counter }}">
+                                        {{ category }}
+                                    </button>
+                                </h2>
+                                <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#categoryAccordion">
+                                    <div class="accordion-body">
+                                        {% if category == "Communication Boosters" %}
+                                            Challenges focused on improving verbal and non-verbal communication between partners.
+                                        {% elif category == "Physical Touch & Affection" %}
+                                            Challenges that strengthen physical connection through non-sexual touch and affection.
+                                        {% elif category == "Creative Date Night Ideas" %}
+                                            Creative activities and date ideas to spend quality time together in new ways.
+                                        {% elif category == "Sexual Exploration" %}
+                                            Challenges to enhance intimacy, explore desires, and strengthen sexual connection.
+                                        {% elif category == "Emotional Connection" %}
+                                            Challenges focused on deepening emotional bond, vulnerability, and understanding.
+                                        {% else %}
+                                            Various relationship-building activities and exercises.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="post" action="{% url 'generate_challenge' %}" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-8">
+                        <select name="category" class="form-select">
+                            <option value="">Smart Selection (Recommended)</option>
+                            {% for category in categories %}
+                                <option value="{{ category }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">
+                            "Smart Selection" uses your preferences and history to find the perfect challenge.
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-primary w-100">Generate Challenge</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Challenge History</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Challenge Title</th>
+                                <th>Category</th>
+                                <th>Completed Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if completed_challenges %}
+                                {% for challenge in completed_challenges %}
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#challengeModal-{{ challenge.id }}">
+                                                {{ challenge.title }}
+                                            </button>
+                                            
+                                            <!-- Challenge Details Modal -->
+                                            <div class="modal fade" id="challengeModal-{{ challenge.id }}" tabindex="-1" aria-labelledby="challengeModalLabel-{{ challenge.id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="challengeModalLabel-{{ challenge.id }}">Challenge Details</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p class="text-center"><span class="badge bg-secondary">{{ challenge.category }}</span></p>
+                                                            <h4 class="fw-bold">{{ challenge.title }}</h4>
+                                                            <p>{{ challenge.description }}</p>
+                                                            <p><small class="text-muted">Difficulty: {{ challenge.difficulty }}</small></p>
+                                                            <hr>
+                                                            <p class="text-muted">Completed on {{ challenge.completed_at|date:"F d, Y" }}</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-secondary">{{ challenge.category }}</span></td>
+                                        <td>{{ challenge.completed_at|date:"M d, Y" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No completed challenges yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

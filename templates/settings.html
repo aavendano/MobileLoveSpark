@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}PlayLove Spark - Settings{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Account Settings</h1>
+        <p class="lead">Customize your PlayLove Spark experience</p>
+    </div>
+</div>
+
+{% if not user_profile.initialized %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            Please set up your profile on the home page before accessing settings.
+            <a href="{% url 'home' %}" class="btn btn-primary ms-3">Go to Profile Setup</a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Profile Settings</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'update_profile' %}">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.partner1_name.id_for_label }}" class="form-label">Your Name</label>
+                            {{ form.partner1_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.partner2_name.id_for_label }}" class="form-label">Partner's Name</label>
+                            {{ form.partner2_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.relationship_status.id_for_label }}" class="form-label">Relationship Status</label>
+                            {{ form.relationship_status }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.relationship_duration.id_for_label }}" class="form-label">Relationship Duration</label>
+                            {{ form.relationship_duration }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.challenge_frequency.id_for_label }}" class="form-label">Challenge Frequency</label>
+                        {{ form.challenge_frequency }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Preferred Challenge Categories</label>
+                        <div class="form-text mb-2">Select the types of challenges you're interested in</div>
+                        <div class="row">
+                            {% for choice in form.preferred_categories %}
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        {{ choice }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Excluded Challenge Categories</label>
+                        <div class="form-text mb-2">Select any categories you'd prefer to avoid</div>
+                        <div class="row">
+                            {% for choice in form.excluded_categories %}
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        {{ choice }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4>Danger Zone</h4>
+            </div>
+            <div class="card-body">
+                <h5>Reset Progress</h5>
+                <p>This will reset all your challenge completions, badges, and progress. This action cannot be undone.</p>
+                <form method="post" action="{% url 'reset_progress' %}" onsubmit="return confirm('Are you sure you want to reset all progress? This cannot be undone.');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">Reset Progress</button>
+                </form>
+                
+                <hr>
+                
+                <h5>Export Your Data</h5>
+                <p>Download all your PlayLove Spark data as a JSON file.</p>
+                <a href="{% url 'export_data' %}" class="btn btn-outline-primary">Export Data</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Help & Support</h4>
+            </div>
+            <div class="card-body">
+                <p>Need help with your PlayLove Spark account?</p>
+                <p>Check our <a href="#">FAQ</a> or <a href="#">contact support</a>.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>App Information</h4>
+            </div>
+            <div class="card-body">
+                <p>PlayLove Spark</p>
+                <p>Version: 1.0.0</p>
+                <p><a href="#">Privacy Policy</a></p>
+                <p><a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}PlayLove Spark - Progress Tracking{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Calendar styling */
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+    }
+    
+    .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        font-size: 0.8rem;
+    }
+    
+    .calendar-day.active {
+        background-color: var(--secondary);
+        color: white;
+    }
+    
+    .calendar-day.inactive {
+        background-color: #f5f5f5;
+        color: #999;
+    }
+    
+    .calendar-header {
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    /* Category stats chart */
+    .category-bar {
+        height: 25px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        position: relative;
+    }
+    
+    .category-bar .fill {
+        height: 100%;
+        border-radius: 5px;
+        background-color: var(--primary);
+    }
+    
+    .category-bar .label {
+        position: absolute;
+        left: 10px;
+        top: 0;
+        line-height: 25px;
+        color: white;
+        font-size: 0.85rem;
+        mix-blend-mode: difference;
+    }
+    
+    .category-bar .percent {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        line-height: 25px;
+        color: white;
+        font-size: 0.85rem;
+        mix-blend-mode: difference;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1>Your Relationship Progress</h1>
+        <p class="lead">Track your journey and see how your relationship is growing</p>
+    </div>
+</div>
+
+{% if not user_profile.initialized %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            Please set up your profile on the home page before accessing progress tracking.
+            <a href="{% url 'home' %}" class="btn btn-primary ms-3">Go to Profile Setup</a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Spark Level</h4>
+            </div>
+            <div class="card-body">
+                <div class="spark-meter">
+                    <div class="fill" style="width: {{ user_progress.spark_level }}%;"></div>
+                </div>
+                <p class="text-center">{{ user_progress.spark_level }}% Spark</p>
+                
+                <div class="text-center mb-3">
+                    <span class="badge">{{ user_progress.streak }} Day Streak</span>
+                    <span class="badge">{{ user_progress.total_completed }} Completed</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>Your Badges</h4>
+            </div>
+            <div class="card-body">
+                {% if user_progress.badges %}
+                    <div class="row">
+                        {% for badge in user_progress.badges %}
+                            <div class="col-6 text-center mb-3">
+                                <div class="badge-icon">
+                                    <i class="fas fa-award fa-2x text-warning"></i>
+                                </div>
+                                <div>{{ badge }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center">Complete challenges to earn badges!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Activity Calendar</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 text-center">
+                    <h5>{{ current_month_name }} {{ current_year }}</h5>
+                </div>
+                
+                <div class="calendar-grid mb-2">
+                    <div class="calendar-header">Sun</div>
+                    <div class="calendar-header">Mon</div>
+                    <div class="calendar-header">Tue</div>
+                    <div class="calendar-header">Wed</div>
+                    <div class="calendar-header">Thu</div>
+                    <div class="calendar-header">Fri</div>
+                    <div class="calendar-header">Sat</div>
+                    
+                    {% for day in calendar_days %}
+                        {% if day.number == 0 %}
+                            <div class="calendar-day empty"></div>
+                        {% else %}
+                            <div class="calendar-day {% if day.active %}active{% else %}inactive{% endif %}">
+                                {{ day.number }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center">
+                    <small class="text-muted">Days with completed challenges are highlighted</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>Category Completion</h4>
+            </div>
+            <div class="card-body">
+                {% for category in category_stats %}
+                    <div class="category-bar">
+                        <div class="fill" style="width: {{ category.percent }}%;"></div>
+                        <span class="label">{{ category.name }}</span>
+                        <span class="percent">{{ category.percent }}%</span>
+                    </div>
+                {% endfor %}
+                
+                <div class="text-center mt-3">
+                    <small class="text-muted">Based on challenges completed in each category</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

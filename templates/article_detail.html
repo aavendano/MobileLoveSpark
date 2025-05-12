@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} - PlayLove Spark{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'education' %}">Education</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ article.title }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <span class="badge bg-secondary mb-2">{{ article.category }}</span>
+                <h1 class="mb-3">{{ article.title }}</h1>
+                
+                {% if article.image_url %}
+                    <img src="{{ article.image_url }}" alt="{{ article.title }}" class="img-fluid rounded mb-4">
+                {% endif %}
+                
+                <div class="article-content">
+                    {{ article.content|safe }}
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{% url 'education' %}" class="btn btn-outline-primary">Back to Articles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Related Challenges</h4>
+            </div>
+            <div class="card-body">
+                {% if related_challenges %}
+                    <ul class="list-group list-group-flush">
+                        {% for challenge in related_challenges %}
+                            <li class="list-group-item">
+                                <h6>{{ challenge.title }}</h6>
+                                <p class="mb-1">{{ challenge.short_description }}</p>
+                                <form method="post" action="{% url 'generate_challenge' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                                    <button type="submit" class="btn btn-sm btn-primary">Try This Challenge</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No related challenges available.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>More in {{ article.category }}</h4>
+            </div>
+            <div class="card-body">
+                {% if related_articles %}
+                    <ul class="list-group list-group-flush">
+                        {% for related in related_articles %}
+                            <li class="list-group-item">
+                                <a href="{% url 'article_detail' related.id %}">{{ related.title }}</a>
+                                {% if related.id in viewed_articles %}
+                                    <small class="text-success"><i class="fas fa-check"></i></small>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No related articles available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

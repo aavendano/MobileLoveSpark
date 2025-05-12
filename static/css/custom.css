@@ -1,0 +1,107 @@
+/* Custom styles for PlayLove Spark */
+
+:root {
+    --primary: #533278;    /* Purple - primary brand color */
+    --secondary: #F4436C;  /* Pink - secondary brand color */
+    --success: #28a745;    /* Green for success states */
+    --info: #0C7489;       /* Teal - accent color */
+    --warning: #ffc107;    /* Yellow for warning states */
+    --danger: #dc3545;     /* Red for danger states */
+    --light: #f8f9fa;      /* Light gray for backgrounds */
+    --dark: #545C52;       /* Dark gray for text */
+}
+
+/* Body styles */
+body {
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Navbar customization */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-brand span.spark {
+    color: var(--secondary);
+}
+
+/* Challenge Card */
+.challenge-card {
+    position: relative;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.challenge-card .alert-light {
+    background-color: rgba(248, 249, 250, 0.7);
+    border-left: 4px solid var(--primary);
+    padding: 1.5rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.challenge-card h4 {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Badge styling */
+.badge-item {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f0f0;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.badge-item i {
+    margin-right: 0.5rem;
+    color: var(--secondary);
+}
+
+/* Progress elements */
+.spark-level {
+    height: 0.5rem;
+    border-radius: 1rem;
+    background-color: rgba(244, 67, 108, 0.2);
+}
+
+.spark-level .progress-bar {
+    background-color: var(--secondary);
+    border-radius: 1rem;
+}
+
+/* Category badges */
+.category-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* Footer styling */
+.footer {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    background-color: #f2f2f2;
+    color: var(--dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .challenge-card {
+        padding: 1rem;
+    }
+    
+    .challenge-card .alert-light {
+        padding: 1rem;
+    }
+}
