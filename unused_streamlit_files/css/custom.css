@@ -1,0 +1,59 @@
+/* Custom CSS for PlayLove Spark using our color palette */
+
+/* Button primary style with our pink color */
+.stButton>button {
+    border-color: #F4436C !important;
+    color: #F4436C !important;
+}
+
+.stButton>button:hover {
+    background-color: #F4436C !important;
+    color: white !important;
+}
+
+/* Progress bars */
+.stProgress > div > div > div {
+    background-color: #F4436C !important;
+}
+
+/* Slider colors */
+.stSlider > div > div > div > div {
+    background-color: #533278 !important;
+}
+
+/* Checkboxes */
+.stCheckbox > div > div > div > div {
+    background-color: #F4436C !important;
+}
+
+/* Expander titles */
+.streamlit-expanderHeader {
+    color: #533278 !important;
+    font-weight: bold;
+}
+
+/* Text inputs and select boxes */
+.stTextInput>div>div>input, .stSelectbox>div>div>div>div {
+    border-color: #B4B4B4 !important;
+}
+
+.stTextInput>div>div>input:focus, .stSelectbox>div>div>div:focus {
+    border-color: #0C7489 !important;
+    box-shadow: 0 0 0 1px #0C7489 !important;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #F8F8F8;
+    border-right: 1px solid #B4B4B4;
+}
+
+/* Headers */
+h1, h2, h3 {
+    color: #533278 !important;
+}
+
+/* Subheaders */
+h4, h5, h6 {
+    color: #0C7489 !important;
+}
