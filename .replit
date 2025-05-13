@@ -2,7 +2,7 @@ modules = ["python-3.11", "postgresql-16", "flutter"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["freetype", "glibcLocales", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "openssh", "tcl", "tk", "zlib"]
+packages = ["freetype", "glibcLocales", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "openssh", "tcl", "tk", "zlib", "wget", "curl", "unzip"]
 
 [deployment]
 deploymentTarget = "autoscale"
