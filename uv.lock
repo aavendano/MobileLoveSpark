@@ -1643,6 +1643,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "django" },
+    { name = "djangorestframework" },
     { name = "djaodjin-pages" },
     { name = "google-generativeai" },
     { name = "numpy" },
@@ -1658,6 +1659,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = ">=5.2.1" },
+    { name = "djangorestframework", specifier = ">=3.16.0" },
     { name = "djaodjin-pages", specifier = ">=0.8.3" },
     { name = "google-generativeai", specifier = ">=0.8.5" },
     { name = "numpy", specifier = ">=2.2.5" },
