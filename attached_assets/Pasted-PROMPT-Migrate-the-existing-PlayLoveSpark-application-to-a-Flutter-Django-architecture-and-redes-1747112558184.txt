@@ -1,0 +1,80 @@
+PROMPT:
+
+Migrate the existing "PlayLoveSpark" application to a Flutter/Django architecture and redesign the user interface (UI) for a native mobile experience, adhering to PlayLoveToys's brand guidelines.
+
+I. Project Restructuring:
+
+    A.  Establish Directory Structure:
+        1.  Create a top-level project directory named "PlayLoveSpark".
+        2.  Within "PlayLoveSpark," create two subdirectories:
+            a.  "flutter_app" for the Flutter mobile application.
+            b.  "django_backend" for the Django backend API.
+        3.  Organize the Flutter project following Flutter's recommended directory structure (lib/, pubspec.yaml, etc.).
+        4.  Organize the Django project as a separate API, with clear separation of concerns (core/, api/, utils/, etc.).
+
+    B.  Django Backend Re-architecting:
+        1.  Refactor the existing Django application to function primarily as a RESTful API.
+        2.  Define API endpoints for all necessary data and functionality:
+            a.  User authentication and management (if Django handles this).
+            b.  Challenge retrieval and management.
+            c.  User progress tracking.
+        3.  Use Django REST Framework (or similar) to facilitate API development and data serialization (JSON).
+        4.  Ensure robust authentication and authorization mechanisms to protect user data.
+        5.  Optimize database queries for efficient data retrieval to support the Flutter app's performance.
+        6.  Crucially, eliminate any Django code that becomes obsolete or is no longer used in the new architecture.
+
+    C.  Flutter App Development:
+        1.  Rebuild the entire user interface (UI) of the "PlayLoveSpark" application using the Flutter framework.
+        2.  Implement all existing functionality from the web prototype in Flutter:
+            a.  Challenge display and interaction.
+            b.  User profile management and preferences.
+            c.  Progress tracking and visualization.
+            d.  Educational content delivery.
+        3.  Establish communication with the Django backend API for data exchange:
+            a.  Use HTTP client packages in Flutter to make requests to Django endpoints.
+            b.  Handle API responses and data display within the Flutter UI.
+        4.  Design the app for both Android and iOS platforms, ensuring a consistent user experience.
+
+II. UI/UX Redesign in Flutter:
+
+    A.  Adherence to PlayLoveToys Brand:
+        1.  Incorporate PlayLoveToys's brand identity into the app's visual design:
+            a.  Color palette:
+                i.   533278 (Primary - Dark Purple)
+                ii.  F4436C (Secondary - Pink)
+                iii. B4B4B4 (Neutral - Grey)
+                iv.  0C7489 (Accent - Teal)
+                v.   545C52 (Neutral - Dark Green)
+            b.  Typography:
+                i.   Fonts:
+                    * Primary: Roboto
+                    * Secondary: Open Sans
+                ii.  Sizes:
+                    * H1: 24pt
+                    * H2: 20pt
+                    * H3: 18pt
+                    * Body: 16pt
+                    * Label/Caption: 12pt
+                iii. Styles:
+                    * Bold for headings and key information
+                    * Regular for body text
+                    * Light for secondary text
+            c.  Logo usage:
+                * Prominently displayed on the splash screen and home screen.
+                * Used consistently in the app header.
+                * Maintain aspect ratio and clear spacing.
+            d.  Tone of voice in all in-app text:
+                * Empowering, Sex-Positive, Inclusive, Educational, Respectful, Authentic, Discreet.
+        2.  Maintain the brand's core values throughout the user experience:
+            * Empowerment, Sex-Positivity, Inclusivity, Education, Respect, Authenticity, Discretion.
+
+    B.  Mobile-First Design:
+        1.  Prioritize a user-friendly and intuitive experience on mobile devices (smartphones).
+        2.  Optimize layouts, navigation, and interactions for touchscreens.
+        3.  Ensure responsiveness across different screen sizes and orientations.
+
+    C.  Accessibility Considerations:
+        1.  Incorporate accessibility features to accommodate users with disabilities:
+            * Adjustable font sizes (within settings).
+            * Sufficient color contrast (adhering to WCAG 2.0 AA guidelines).
+            * Screen reader compatibility (if feasible - explore Flutter accessibility packages).
