@@ -20,6 +20,10 @@ author = "agent"
 task = "workflow.run"
 args = "Server"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Flutter"
+
 [[workflows.workflow]]
 name = "Server"
 author = "agent"
@@ -28,6 +32,15 @@ author = "agent"
 task = "shell.exec"
 args = "python run_django.py"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Flutter"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd PlayLoveSpark/flutter_app && flutter run -d web-server --web-port 5001 --web-hostname 0.0.0.0"
+waitForPort = 5001
 
 [[ports]]
 localPort = 5000
