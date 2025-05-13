@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     # Project Apps
     'core',
     'core.templatetags',
+    'api',
 ]
 
 MIDDLEWARE = [
