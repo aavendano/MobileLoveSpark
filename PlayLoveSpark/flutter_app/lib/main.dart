@@ -1,23 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'screens/splash_screen.dart';
+import 'routes.dart';
 import 'services/api_service.dart';
 import 'services/auth_service.dart';
 import 'services/notification_service.dart';
+import 'services/theme_service.dart';
+import 'models/app_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize services
+  // Create service instances
+  final apiService = APIService();
+  final authService = AuthService();
   final notificationService = NotificationService();
-  await notificationService.initialize();
+  final themeService = ThemeService();
+  final appState = AppState();
+  
+  // Initialize services
+  await Future.wait([
+    notificationService.initialize(),
+    apiService.init(),
+    authService.init(),
+    themeService.init(),
+  ]);
+  
+  // Set initial app state based on auth status
+  appState.isLoggedIn = authService.isLoggedIn;
   
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => APIService()),
-        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => apiService),
+        ChangeNotifierProvider(create: (_) => authService),
+        ChangeNotifierProvider(create: (_) => themeService),
+        ChangeNotifierProvider(create: (_) => appState),
+        Provider(create: (_) => notificationService),
       ],
       child: const PlayLoveSparkApp(),
     ),
@@ -29,6 +48,8 @@ class PlayLoveSparkApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeService = Provider.of<ThemeService>(context);
+    
     return MaterialApp(
       title: 'PlayLove Spark',
       theme: ThemeData(
@@ -38,6 +59,7 @@ class PlayLoveSparkApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF533278),
           secondary: const Color(0xFFF4436C),
+          brightness: themeService.isDarkMode ? Brightness.dark : Brightness.light,
         ),
         // Text theme using Roboto
         textTheme: GoogleFonts.robotoTextTheme(
@@ -78,8 +100,12 @@ class PlayLoveSparkApp extends StatelessWidget {
             color: Color(0xFF533278),
           ),
         ),
+        // Theme brightness based on user preference
+        brightness: themeService.isDarkMode ? Brightness.dark : Brightness.light,
       ),
-      home: const SplashScreen(),
+      // Set up navigation using the router
+      initialRoute: AppRouter.splash,
+      onGenerateRoute: AppRouter.generateRoute,
       debugShowCheckedModeBanner: false,
     );
   }

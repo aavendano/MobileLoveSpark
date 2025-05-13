@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
+import '../models/app_state.dart';
+import '../routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
-import 'onboarding_screen.dart';
-import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,28 +21,43 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _initializeApp() async {
-    // Initialize services
+    // Get service references
     final apiService = Provider.of<APIService>(context, listen: false);
     final authService = Provider.of<AuthService>(context, listen: false);
+    final appState = Provider.of<AppState>(context, listen: false);
     
-    await Future.wait([
-      apiService.init(),
-      authService.init(),
-    ]);
-    
-    await Future.delayed(const Duration(seconds: 2)); // Show splash for at least 2 seconds
+    // Show splash for at least 2 seconds
+    await Future.delayed(const Duration(seconds: 2));
     
     if (!mounted) return;
     
-    // Navigate to appropriate screen
+    // If user is logged in, get their profile and current challenge
     if (authService.isLoggedIn) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
+      try {
+        // Get user profile
+        final user = await apiService.getUserProfile();
+        
+        if (user != null) {
+          appState.currentUser = user;
+        }
+        
+        // Get current challenge
+        final challenge = await apiService.getCurrentChallenge();
+        if (challenge != null) {
+          appState.activeChallenge = challenge;
+        }
+      } catch (e) {
+        debugPrint('Error initializing user data: $e');
+      }
+    }
+    
+    if (!mounted) return;
+    
+    // Navigate to appropriate screen based on login status
+    if (authService.isLoggedIn) {
+      Navigator.of(context).pushReplacementNamed(AppRouter.home);
     } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-      );
+      Navigator.of(context).pushReplacementNamed(AppRouter.onboarding);
     }
   }
 
@@ -75,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 24),
             // App Name
-            Text(
+            const Text(
               "PlayLove Spark",
               style: TextStyle(
                 color: Colors.white,

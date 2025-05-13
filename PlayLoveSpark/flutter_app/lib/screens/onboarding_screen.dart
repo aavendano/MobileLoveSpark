@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/user.dart';
+import '../models/app_state.dart';
+import '../routes.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
-import 'home_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -16,6 +17,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _formKey = GlobalKey<FormState>();
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  bool _isSubmitting = false;
   
   // Form fields
   final TextEditingController _partner1Controller = TextEditingController();
@@ -67,47 +69,103 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       return;
     }
     
+    if (_relationshipStatus.isEmpty || _relationshipDuration.isEmpty) {
+      // Go back to relationship page if not filled out
+      _pageController.animateToPage(
+        1,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      return;
+    }
+    
+    setState(() {
+      _isSubmitting = true;
+    });
+    
     final apiService = Provider.of<APIService>(context, listen: false);
     final authService = Provider.of<AuthService>(context, listen: false);
+    final appState = Provider.of<AppState>(context, listen: false);
     
-    // Create user model
-    final user = User(
-      partner1Name: _partner1Controller.text,
-      partner2Name: _partner2Controller.text,
-      relationshipStatus: _relationshipStatus,
-      relationshipDuration: _relationshipDuration,
-      challengeFrequency: _challengeFrequency,
-      preferredCategories: _preferredCategories,
-      excludedCategories: _excludedCategories,
-    );
-    
-    // Create user in API
-    final createdUser = await apiService.createUserProfile(user);
-    
-    if (!mounted) return;
-    
-    if (createdUser != null && createdUser.id != null) {
-      // Set authenticated user
-      await authService.setUser(createdUser.id);
+    try {
+      // Create user model
+      final user = User(
+        partner1Name: _partner1Controller.text,
+        partner2Name: _partner2Controller.text,
+        relationshipStatus: _relationshipStatus,
+        relationshipDuration: _relationshipDuration,
+        challengeFrequency: _challengeFrequency,
+        preferredCategories: _preferredCategories,
+        excludedCategories: _excludedCategories,
+      );
       
-      // Navigate to home screen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    } else {
-      // Show error
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to create profile. Please try again.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      // Create user in API
+      final createdUser = await apiService.createUserProfile(user);
+      
+      if (!mounted) return;
+      
+      if (createdUser != null && createdUser.id != null) {
+        // Set authenticated user in auth service
+        await authService.setUser(createdUser.id);
+        
+        // Update app state
+        appState.isLoggedIn = true;
+        appState.currentUser = createdUser;
+        
+        // Generate initial challenge
+        final challenge = await apiService.generateChallenge();
+        if (challenge != null) {
+          appState.activeChallenge = challenge;
+        }
+        
+        // Navigate to home screen
+        Navigator.of(context).pushReplacementNamed(AppRouter.home);
+      } else {
+        throw Exception('Failed to create user profile');
+      }
+    } catch (e) {
+      if (mounted) {
+        // Show error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
     }
   }
   
   // Next page
   void _nextPage() {
     if (_currentPage < 3) {
+      // Validate current page before proceeding
+      if (_currentPage == 0) {
+        if (_partner1Controller.text.isEmpty || _partner2Controller.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please enter both names to continue'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+      } else if (_currentPage == 1) {
+        if (_relationshipStatus.isEmpty || _relationshipDuration.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please select both relationship status and duration'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
+      }
+      
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -176,11 +234,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             children: [
               // Back button
               TextButton(
-                onPressed: _currentPage > 0 ? _previousPage : null,
+                onPressed: (_currentPage > 0 && !_isSubmitting) ? _previousPage : null,
                 child: Text(
                   'Back',
                   style: TextStyle(
-                    color: _currentPage > 0 
+                    color: (_currentPage > 0 && !_isSubmitting)
                         ? const Color(0xFF533278) 
                         : Colors.grey,
                   ),
@@ -206,16 +264,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               
               // Next/Submit button
-              ElevatedButton(
-                onPressed: _nextPage,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF4436C),
-                ),
-                child: Text(
-                  _currentPage < 3 ? 'Next' : 'Submit',
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
+              _isSubmitting
+                  ? const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : ElevatedButton(
+                      onPressed: _nextPage,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF4436C),
+                      ),
+                      child: Text(
+                        _currentPage < 3 ? 'Next' : 'Submit',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
             ],
           ),
         ),
